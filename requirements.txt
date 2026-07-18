@@ -1,4 +1,6 @@
 streamlit>=1.38
-pandas>=2.2.3
-numpy>=1.26
+pandas>=2.3.3
+numpy>=2.1
 plotly>=5.23
+statsmodels>=0.14.2
+pillow>=12.0
