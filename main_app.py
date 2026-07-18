@@ -284,10 +284,23 @@ else:
         var2 = st.selectbox("Variable numérica 2", options=columnas_numericas, index=1 if len(columnas_numericas) > 1 else 0, key="var2")
 
     fig_comp = px.scatter(
-        df_filtrado, x=var1, y=var2, color="Fase", trendline="ols",
+        df_filtrado, x=var1, y=var2, color="Fase",
         color_discrete_sequence=px.colors.qualitative.Set2,
         title=f"Relación entre {var1} y {var2}",
     )
+
+    # Línea de tendencia calculada manualmente (regresión lineal simple con NumPy),
+    # para no depender de statsmodels (evita problemas de instalación en Python 3.14).
+    datos_validos = df_filtrado[[var1, var2]].dropna()
+    if len(datos_validos) >= 2:
+        pendiente, intercepto = np.polyfit(datos_validos[var1], datos_validos[var2], 1)
+        x_linea = np.linspace(datos_validos[var1].min(), datos_validos[var1].max(), 100)
+        y_linea = pendiente * x_linea + intercepto
+        fig_comp.add_scatter(
+            x=x_linea, y=y_linea, mode="lines", name="Tendencia (regresión lineal)",
+            line=dict(color="black", dash="dash"),
+        )
+
     st.plotly_chart(fig_comp, use_container_width=True)
 
 st.sidebar.markdown("---")
